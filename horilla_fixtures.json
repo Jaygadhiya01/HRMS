@@ -1,0 +1,87 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$XyIxQJch8KEtkghxJk0RAe$lABDp9O+KZX4zTkzslatmZ7AzjFmPuxnWeC0GxUb2W8=",
+    "last_login": "2025-05-30T04:43:56.057Z",
+    "is_superuser": true,
+    "username": "jay",
+    "first_name": "",
+    "last_name": "",
+    "email": "jay@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-05-29T12:54:50.913Z",
+    "is_new_employee": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$Rndzi7ZmYrhhIuQC5E2yhH$zoePGGf9zsZGrFv1TTYjLeU1HkgNSnYZyxoNR89fvkI=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@email.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-05-30T04:41:39.161Z",
+    "is_new_employee": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0gzaibmhj08bxda08ggn19k9htj2zrkw",
+  "fields": {
+    "session_data": ".eJydUk1rwjAY_iuSs2sTG63tcUPwMNl2HENKPt7auLQpaQoT8b_vLbRMZewwcgnPV_I-yZlID0Ir39eyI_nHmfTekpxUIbR5HLNFGlFcLF9TSmMyJ42oAfmt88ZagUDp-kaTPPgeLvO_7VC31p0ArnIm6J9B0-ah9a409rfkibo7YT8nhehDVfQd-MIgTBi5waRQnzDoiT6K5uAi5ZrgjYwGSTSyXbRzGuzjqL0JqERXDW6aaC6WfKUZW64YhXXK0wUky5LKUmY8yygIKGVJE7rgmSjTRAJN-UplXHG6xNAOLKgAulCubkVzGi97Dxem6YJoFI5_Jj_S8a1m2zf0GJwCsbgGbUQsRQfxAMU40rGFAyoCfAVU7E6zpzECXVgDuyBngh3K3exen1_eN5uhVGMDeLzEVPjwjdj-ilCi0UaLMDKXb06yzGc:1uKtnF:mVY2NB04nzRnTRLZkCoDYAF6H6rilfr2Wd0IHFJVJlY",
+    "expire_date": "2025-06-13T07:04:41.016Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "jqylr7letps9n62n21okkzoycdfs6ni9",
+  "fields": {
+    "session_data": ".eJxdkd1rwjAUxf-VkmdpE5ta2ze3yRTq5qZvQ0o-bm1d-kGawkT833cLheHI28nvnNxzcyOucgZISl7XR2_z_rnNspW3fTscV1m2fvFW-_2BzIi0ILSyQy17kn7dyGANWkrnujQI2Dz2KR6WLimlAeKNqMfITWsrYwQKRTs0mqTODnA_zUguBlfmQw82r1AmjDxoUqhvGHmiL6I5t75qG2cr6Y-IP932_q7VYJ4m9iGgFH05ummouYj4QjMWLRiFZczjOYRRQWUhE54kFAQUsqAhnfNEFHEogcZ8oRKuOI0wtAcDyoHOVVt3orlOw_6X86rpnWgUtr6RP3RagLf5QE-FLVALatCVCKToIRilACtdOjgj4eDHIbG7es9TBLpwDeyOG6yMA4svQt2Z9gowfgQ73X8BAjSRFA:1uKct7:ho3Aq8pQVotJ5DzcxwWpwioGbKvFZ6mBz3z7hAsKWU8",
+    "expire_date": "2025-06-12T13:01:37.725Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qvhd9ph69d1vbkezvejg3j6awv1owejg",
+  "fields": {
+    "session_data": "e30:1uKrat:V0XN4SIfeOVCCBONOD-1f6DDvYhh4ifHvnMNSVUg-qU",
+    "expire_date": "2025-06-13T04:43:47.673Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 1,
+  "fields": {
+    "level": "info",
+    "recipient": [
+      "jay"
+    ],
+    "unread": false,
+    "actor_content_type": [
+      "employee",
+      "employee"
+    ],
+    "actor_object_id": "1",
+    "verb": "You are chosen as one of recruitment manager",
+    "description": null,
+    "target_content_type": null,
+    "target_object_id": null,
+    "action_object_content_type": null,
+    "action_object_object_id": null,
+    "timestamp": "2025-05-30T06:25:42.793Z",
+    "public": true,
+    "deleted": false,
+    "emailed": false,
+    "data": {
+      "verb_ar": 

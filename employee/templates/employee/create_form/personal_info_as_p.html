@@ -1,0 +1,91 @@
+{% load i18n %}
+{% load basefilters %}
+{% load widget_tweaks %}
+
+{{ form.non_field_errors }}
+
+<div class="row">
+  {% for field in form %}
+  {% if field.name == "country" or field.name == "state" or field.name == "badge_id" or field.name == "employee_profile" %}
+    {# Skip these fields here, render manually if needed below #}
+  {% elif field.name == "temporary_address" %}
+      <div class="col-lg-12">
+        <div class="form-check mb-2">
+          <input type="checkbox" id="sameAddressCheckbox" class="form-check-input" name="same_address"
+                 {% if form.initial.same_address or form.instance.same_address %}checked{% endif %}>
+          <label class="form-check-label" for="sameAddressCheckbox">Same as Permanent Address</label>
+        </div>
+
+        <div id="temp-address-group">
+          <div class="oh-input__group">
+            <label class="oh-label {% if field.field.required %}required-star{% endif %}" for="id_{{ field.name }}">
+              {% trans field.label %}
+            </label>
+            {{ field|add_class:"form-control" }}
+            {{ field.errors }}
+          </div>
+        </div>
+      </div>
+
+    {% elif field.name == "permanent_address" %}
+      <div class="col-lg-12">
+        <div class="oh-input__group">
+          <label class="oh-label {% if field.field.required %}required-star{% endif %}" for="id_{{ field.name }}">
+            {% trans field.label %}
+          </label>
+          {{ field|add_class:"form-control" }}
+          {{ field.errors }}
+        </div>
+      </div>
+
+    {% else %}
+      <div class="col-lg-6">
+        <div class="oh-input__group">
+          <label class="oh-label {% if field.field.required %}required-star{% endif %}" for="id_{{ field.name }}">
+            {% trans field.label %}
+          </label>
+
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="oh-switch" style="width: 30px;">
+              {{ field|add_class:"oh-switch__checkbox" }}
+            </div>
+          {% else %}
+            {{ field|add_class:"form-control" }}
+          {% endif %}
+
+          {{ field.errors }}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const checkbox = document.getElementById("sameAddressCheckbox");
+  const permanent = document.getElementById("id_permanent_address");
+  const temporary = document.getElementById("id_temporary_address");
+  const tempGroup = document.getElementById("temp-address-group");
+
+  function handleToggle() {
+    if (checkbox.checked) {
+      temporary.value = permanent.value;
+      tempGroup.style.display = "none";
+    } else {
+      tempGroup.style.display = "block";
+      // Don't clear the existing temporary value
+    }
+  }
+
+  checkbox.addEventListener("change", handleToggle);
+
+  permanent.addEventListener("input", function () {
+    if (checkbox.checked) {
+      temporary.value = permanent.value;
+    }
+  });
+
+  handleToggle(); // Initialize state on page load
+});
+
+</script>
