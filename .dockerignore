@@ -1,5 +1,27 @@
-.github
-.gitignore
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+horillavenv/
+horilla/horillavenv/
+
+# Environment files
+.env
+*.env
+
+# SQLite DBs
+*.sqlite3
+
+# Git and metadata
+.git/
+.github/
 *.md
-LICENSE
-docker-compose.yaml
+
+# Ignore test and IDE settings (optional)
+*.log
+*.idea/
+*.vscode/
