@@ -102,34 +102,62 @@
 					</li>
 					<!-- employee_detail.html -->
 					<ul class="oh-profile__card-info-list">
-						<li class="oh-profile__card-info-item">
-							<span class="oh-profile__info-label mb-1">
-								<ion-icon name="document-text-outline"></ion-icon>
-								<span>{% trans "Aadhaar Number" %}</span>
-							</span>
-							<span class="oh-profile__info-value">{{ employee.aadhaar_number|default:_("Not provided") }}</span>
-						</li>
-						<li class="oh-profile__card-info-item">
-							<span class="oh-profile__info-label mb-1">
-								<ion-icon name="document-text-outline"></ion-icon>
-								<span>{% trans "PAN Number" %}</span>
-							</span>
-							<span class="oh-profile__info-value">{{ employee.pan_number|default:_("Not provided") }}</span>
-						</li>
-						<li class="oh-profile__card-info-item">
-							<span class="oh-profile__info-label mb-1">
-								<ion-icon name="document-text-outline"></ion-icon>
-								<span>{% trans "Passport Number" %}</span>
-							</span>
-							<span class="oh-profile__info-value">{{ employee.passport_number|default:_("Not provided") }}</span>
-						</li>
-						<li class="oh-profile__card-info-item">
-							<span class="oh-profile__info-label mb-1">
-								<ion-icon name="document-text-outline"></ion-icon>
-								<span>{% trans "PF UAN Number" %}</span>
-							</span>
-							<span class="oh-profile__info-value">{{ employee.pf_uan_number|default:_("Not provided") }}</span>
-						</li>
+
+					<li class="oh-profile__card-info-item">
+						<span class="oh-profile__info-label mb-1">
+						<ion-icon name="document-text-outline"></ion-icon>
+						<span>{% trans "Aadhaar Number" %}</span>
+						</span>
+						<span class="oh-profile__info-value">
+						{% if perms.employee.view_employee or perms.payroll.view_contract or request.user == employee.employee_user_id %}
+							{{ employee.aadhaar_number|default:_("Not provided") }}
+						{% else %}
+							************
+						{% endif %}
+						</span>
+					</li>
+
+					<li class="oh-profile__card-info-item">
+						<span class="oh-profile__info-label mb-1">
+						<ion-icon name="document-text-outline"></ion-icon>
+						<span>{% trans "PAN Number" %}</span>
+						</span>
+						<span class="oh-profile__info-value">
+						{% if perms.employee.view_employee or perms.payroll.view_contract or request.user == employee.employee_user_id %}
+							{{ employee.pan_number|default:_("Not provided") }}
+						{% else %}
+							************
+						{% endif %}
+						</span>
+					</li>
+
+					<li class="oh-profile__card-info-item">
+						<span class="oh-profile__info-label mb-1">
+						<ion-icon name="document-text-outline"></ion-icon>
+						<span>{% trans "Passport Number" %}</span>
+						</span>
+						<span class="oh-profile__info-value">
+						{% if perms.employee.view_employee or perms.payroll.view_contract or request.user == employee.employee_user_id %}
+							{{ employee.passport_number|default:_("Not provided") }}
+						{% else %}
+							************
+						{% endif %}
+						</span>
+					</li>
+
+					<li class="oh-profile__card-info-item">
+						<span class="oh-profile__info-label mb-1">
+						<ion-icon name="document-text-outline"></ion-icon>
+						<span>{% trans "PF UAN Number" %}</span>
+						</span>
+						<span class="oh-profile__info-value">
+						{% if perms.employee.view_employee or perms.payroll.view_contract or request.user == employee.employee_user_id %}
+							{{ employee.pf_uan_number|default:_("Not provided") }}
+						{% else %}
+							************
+						{% endif %}
+						</span>
+					</li>
 					</ul>
 				</ul>
 			</div>
