@@ -1,322 +1,270 @@
 {% load i18n %}
+{% load widget_tweaks %}
+
 <div>
-    <div
-        class="oh-general__tab-target oh-profile-section mb-4"
-        id="personal"
-        data-select2-id="select2-data-personal"
-    >
-        <div
-            class="oh-profile-section__card"
-            data-select2-id="select2-data-48-0df8"
-        >
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row">
-                    <div
-                        class="col-12 col-sm-12 col-md-12 col-lg-6 d-flex align-items-center"
-                    >
-                        <div
-                            class="oh-profile-section__edit-photo me-4 mb-3"
-                            data-toggle="oh-modal-toggle"
-                            data-target="#uploadPhotoModal"
-                        >
-                            <img
-                                src="{{form.instance.get_avatar}}"
-                                class="oh-profile-section__avatar preview"
-                                alt="Username"
-                            />
-                        </div>
-                    </div>
-                </div>
-                {{form.employee_profile.errors}}
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label" for="firstname"
-                            >{% trans "First Name" %}</label
-                        >
-                        {{form.employee_first_name}}
-                        {{form.employee_first_name.errors}}
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label" for="lastname"
-                            >{% trans "Last Name" %}</label
-                        >
-                        {{form.employee_last_name}}
-                        {{form.employee_last_name.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label" for="email"
-                            >{% trans "Email" %}</label
-                        >
-                        {{form.email}} {{form.email.errors}}
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label" for="phone"
-                            >{% trans "Phone" %}</label
-                        >
-                        {{form.phone}} {{form.phone.errors}}
-                    </div>
-                </div>
-                <div class="row" data-select2-id="select2-data-46-nz80">
-                    <div
-                        class="col-12 col-sm-12 col-md-12 col-lg-6"
-                        style="position: relative"
-                    >
-                        <label class="oh-label" for="dob"
-                            >{% trans "Date of Birth" %}</label
-                        >
-                        {{form.dob}} {{form.dob.errors}}
-                    </div>
-                    <div
-                        class="col-12 col-sm-12 col-md-12 col-lg-6"
-                        data-select2-id="select2-data-45-37n6"
-                    >
-                        <label class="oh-label" for="gender"
-                            >{% trans "Gender" %}</label
-                        >
-                        {{form.gender}} {{form.gender.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label
-                            class="oh-label d-block"
-                            for="{{form.qualification.id_for_label}}"
-                        >
-                            {% trans "Qualification" %}
-                        </label>
-                        {{form.qualification}} {{form.qualification.errors}}
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label
-                            class="oh-label d-block"
-                            for="{{form.experience.id_for_label}}"
-                        >
-                            {% trans "Experience" %}
-                        </label>
-                        {{form.experience}} {{form.experience.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <label class="oh-label" for="address"
-                            >{% trans "Address" %}</label
-                        >
-                        {{form.address}} {{form.address.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label" for="country"
-                            >{% trans "Country" %}</label
-                        >
-                        <select
-                            class="oh-select-2 oh-select w-100"
-                            name="country"
-                            id="id_country"
-                        >
-                            <option value="{{form.instance.country}}" selected>
-                                {{form.instance.country}}
-                            </option>
-                        </select>
-                        <span
-                            class="dropdown-wrapper"
-                            aria-hidden="true"
-                        ></span>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label d-block" for="state"
-                            >{% trans "State" %}</label
-                        >
-                        <select
-                            name="state"
-                            class="oh-select oh-select-2"
-                            id="id_state"
-                        >
-                            <option value="{{form.instance.state}}" selected>
-                                {{form.instance.state}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label d-block" for="state"
-                            >{% trans "City" %}</label
-                        >
-                        {{form.city}} {{form.city.errors}}
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label d-block" for="state"
-                            >{% trans "Zip Code" %}</label
-                        >
-                        {{form.zip}} {{form.zip.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label d-block" for="state"
-                            >{% trans "Emergency Contact" %}</label
-                        >
-                        {{form.emergency_contact}}
-                        {{form.emergency_contact.errors}}
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label
-                            class="oh-label d-block"
-                            for="emergencyContactName"
-                            >{% trans "Contact Name" %}</label
-                        >
-                        {{form.emergency_contact_name}}
-                        {{form.emergency_contact_name.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label
-                            class="oh-label d-block"
-                            for="emergencyContactRelation"
-                        >
-                            {% trans "Emergency Contact Relation" %}
-                        </label>
-                        {{form.emergency_contact_relation}}
-                        {{form.emergency_contact_relation.errors}}
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label d-block" for="marital_status"
-                            >{% trans "Marital Status" %}</label
-                        >
-                        {{form.marital_status}} {{form.marital_status.errors}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                        <label class="oh-label d-block" for="children"
-                            >{% trans "Children" %}</label
-                        >
-                        {{form.children}} {{form.children.errors}}
-                    </div>
-                </div>
-                
-                
-                <hr class="mt-5 mb-3" />
-                <div
-                    class="w-100 d-flex align-items-center justify-content-end"
-                >
-                    <button
-                        type="submit"
-                        class="oh-btn oh-btn--secondary oh-btn--w-100-resp"
-                    >
-                        {% trans "Save" %}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+  <div class="oh-general__tab-target oh-profile-section mb-4" id="personal">
+    <div class="oh-profile-section__card">
+      <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <div
-        class="oh-modal"
-        id="uploadPhotoModal"
-        role="dialog"
-        aria-labelledby="uploadPhotoModal"
-        aria-hidden="true"
-    >
-        <div class="oh-modal__dialog">
-            <div class="oh-modal__dialog-header">
-                <span class="oh-modal__dialog-title" id="uploadPhotoModalLabel"
-                    >{% trans "Upload Photo" %}</span
-                >
-                <button class="oh-modal__close" aria-label="Close">
-                    <ion-icon name="close-outline"></ion-icon>
-                </button>
+        <!-- Profile Image -->
+        <div class="row">
+          <div class="col-lg-6 d-flex align-items-center">
+            <div class="oh-profile-section__edit-photo me-4 mb-3" data-toggle="oh-modal-toggle" data-target="#uploadPhotoModal">
+              <img src="{{ form.instance.get_avatar }}" class="oh-profile-section__avatar preview" alt="Username" />
             </div>
-            <div class="oh-modal__dialog-body" id="uploadPhotoModalBody">
-                <div class="oh-profile-section__image-container">
-                    <form
-                        hx-post="{% url 'update-own-profile-image' %}"
-                        hx-target="#uploadPhotoModalBody"
-                        hx-encoding="multipart/form-data"
-                        id="file-form"
-                    >
-                        {% csrf_token %}
-                        <div class="oh-profile-section__modal-avatar">
-                            <img
-                                src="{{form.instance.get_avatar}}"
-                                class="oh-profile-section__modal-image preview"
-                                alt="Username"
-                            />
-                        </div>
-                        <input
-                            type="file"
-                            name="employee_profile"
-                            id="id_employee_profile"
-                            class="oh-input oh-input--file oh-input--file-sm mt-4"
-                        />
-                        <div
-                            class="d-flex justify-content-between w-100 align-items-center mt-4"
-                        >
-                            <button
-                                class="oh-btn oh-btn--light-danger mr-1"
-                                hx-target="#personalMessage"
-                                hx-delete="{% url 'remove-own-profile-image' %}"
-                            >
-                                <ion-icon
-                                    class="me-1"
-                                    name="trash-outline"
-                                ></ion-icon>
-                                {% trans "Delete Image" %}
-                            </button>
-                            <button
-                                type="submit"
-                                class="oh-btn oh-btn--secondary oh-btn--shadow"
-                            >
-                                {% trans "Update Image" %}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+          </div>
         </div>
-        <div id="personalMessage"></div>
-        <script>
-            $(document).ready(function () {
-                $("#id_employee_profile").change(function (e) {
-                    const file = this.files[0];
-                    const reader = new FileReader();
+        {{ form.employee_profile.errors }}
 
-                    reader.addEventListener("load", function () {
-                        const imageUrl = reader.result;
-                        $(".preview").attr("src", imageUrl);
-                    });
+        <!-- Basic Info -->
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label" for="firstname">{% trans "First Name" %}</label>
+            {{ form.employee_first_name|add_class:"form-control" }}
+            {{ form.employee_first_name.errors }}
+          </div>
+          <div class="col-lg-6">
+            <label class="oh-label" for="lastname">{% trans "Last Name" %}</label>
+            {{ form.employee_last_name|add_class:"form-control" }}
+            {{ form.employee_last_name.errors }}
+          </div>
+        </div>
 
-                    reader.readAsDataURL(file);
-                });
-                $("#file-form").submit(function (e) {
-                    e.preventDefault();
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label" for="email">{% trans "Email" %}</label>
+            {{ form.email|add_class:"form-control" }}
+            {{ form.email.errors }}
+          </div>
+          <div class="col-lg-6">
+            <label class="oh-label" for="phone">{% trans "Phone" %}</label>
+            {{ form.phone|add_class:"form-control" }}
+            {{ form.phone.errors }}
+          </div>
+        </div>
 
-                    var formData = new FormData($(this)[0]);
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label" for="dob">{% trans "Date of Birth" %}</label>
+            {{ form.dob|add_class:"form-control" }}
+            {{ form.dob.errors }}
+          </div>
+          <div class="col-lg-6">
+            <label class="oh-label" for="gender">{% trans "Gender" %}</label>
+            {{ form.gender|add_class:"form-control" }}
+            {{ form.gender.errors }}
+          </div>
+        </div>
 
-                    $.ajax({
-                        url: '{% url "update-own-profile-image" %}',
-                        type: "POST",
-                        data: formData,
-                        async: false,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            $("#personalMessage").html(response);
-                        },
-                        error: function (xhr, status, error) {
-                            // console.log(xhr.responseText);
-                        },
-                    });
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label" for="qualification">{% trans "Qualification" %}</label>
+            {{ form.qualification|add_class:"form-control" }}
+            {{ form.qualification.errors }}
+          </div>
+          <div class="col-lg-6">
+            <label class="oh-label" for="experience">{% trans "Experience" %}</label>
+            {{ form.experience|add_class:"form-control" }}
+            {{ form.experience.errors }}
+          </div>
+        </div>
 
-                    return false;
-                });
-            });
-        </script>
+        <!-- Address -->
+        <div class="row">
+          <div class="col-lg-12">
+            <label class="oh-label">{% trans "Permanent Address" %}</label>
+            {{ form.permanent_address|add_class:"form-control" }}
+            {{ form.permanent_address.errors }}
+          </div>
+
+          <div class="col-lg-12 mt-2">
+            <div class="form-check mb-2">
+              <input type="checkbox" id="sameAddressCheckbox" class="form-check-input" name="same_address"
+                     {% if form.initial.same_address or form.instance.same_address %}checked{% endif %}>
+              <label class="form-check-label" for="sameAddressCheckbox">Same as Permanent Address</label>
+            </div>
+
+            <div id="temp-address-group">
+              <label class="oh-label">{% trans "Temporary Address" %}</label>
+              {{ form.temporary_address|add_class:"form-control" }}
+              {{ form.temporary_address.errors }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Contact -->
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label">{% trans "Emergency Contact" %}</label>
+            {{ form.emergency_contact|add_class:"form-control" }}
+            {{ form.emergency_contact.errors }}
+          </div>
+          <div class="col-lg-6">
+            <label class="oh-label">{% trans "Contact Name" %}</label>
+            {{ form.emergency_contact_name|add_class:"form-control" }}
+            {{ form.emergency_contact_name.errors }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label">{% trans "Emergency Contact Relation" %}</label>
+            {{ form.emergency_contact_relation|add_class:"form-control" }}
+            {{ form.emergency_contact_relation.errors }}
+          </div>
+          <div class="col-lg-6">
+            <label class="oh-label">{% trans "Marital Status" %}</label>
+            {{ form.marital_status|add_class:"form-control" }}
+            {{ form.marital_status.errors }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="oh-label">{% trans "Children" %}</label>
+            {{ form.children|add_class:"form-control" }}
+            {{ form.children.errors }}
+          </div>
+        </div>
+
+        <!-- Other Fields -->
+        <div class="row">
+          {% for field in form %}
+            {% if field.name not in "employee_first_name employee_last_name email phone dob gender qualification experience emergency_contact emergency_contact_name emergency_contact_relation marital_status children temporary_address permanent_address employee_profile same_address country state badge_id" %}
+              <div class="col-lg-6">
+                <div class="oh-input__group">
+                  <label class="oh-label {% if field.field.required %}required-star{% endif %}" for="id_{{ field.name }}">
+                    {% trans field.label %}
+                  </label>
+                  {% if field.field.widget.input_type == "checkbox" %}
+                    <div class="oh-switch" style="width: 30px;">
+                      {{ field|add_class:"oh-switch__checkbox" }}
+                    </div>
+                  {% else %}
+                    {{ field|add_class:"form-control" }}
+                  {% endif %}
+                  {{ field.errors }}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <!-- Submit -->
+        <hr class="mt-5 mb-3" />
+        <div class="w-100 d-flex align-items-center justify-content-end">
+          <button type="submit" class="oh-btn oh-btn--secondary oh-btn--w-100-resp">
+            {% trans "Save" %}
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <!-- Upload Photo Modal -->
+  <div class="oh-modal" id="uploadPhotoModal" role="dialog" aria-labelledby="uploadPhotoModal" aria-hidden="true">
+    <div class="oh-modal__dialog">
+      <div class="oh-modal__dialog-header">
+        <span class="oh-modal__dialog-title" id="uploadPhotoModalLabel">{% trans "Upload Photo" %}</span>
+        <button class="oh-modal__close" aria-label="Close">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="oh-modal__dialog-body" id="uploadPhotoModalBody">
+        <div class="oh-profile-section__image-container">
+          <form
+            hx-post="{% url 'update-own-profile-image' %}"
+            hx-target="#uploadPhotoModalBody"
+            hx-encoding="multipart/form-data"
+            id="file-form"
+          >
+            {% csrf_token %}
+            <div class="oh-profile-section__modal-avatar">
+              <img src="{{ form.instance.get_avatar }}" class="oh-profile-section__modal-image preview" alt="Username" />
+            </div>
+            <input type="file" name="employee_profile" id="id_employee_profile"
+                   class="oh-input oh-input--file oh-input--file-sm mt-4" />
+            <div class="d-flex justify-content-between w-100 align-items-center mt-4">
+              <button class="oh-btn oh-btn--light-danger mr-1"
+                      hx-target="#personalMessage"
+                      hx-delete="{% url 'remove-own-profile-image' %}">
+                <ion-icon class="me-1" name="trash-outline"></ion-icon>
+                {% trans "Delete Image" %}
+              </button>
+              <button type="submit" class="oh-btn oh-btn--secondary oh-btn--shadow">
+                {% trans "Update Image" %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="personalMessage"></div>
+  </div>
+
+  <!-- Address JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkbox = document.getElementById("sameAddressCheckbox");
+      const permanent = document.getElementById("id_permanent_address");
+      const temporary = document.getElementById("id_temporary_address");
+      const tempGroup = document.getElementById("temp-address-group");
+
+      function handleToggle() {
+        if (checkbox.checked) {
+          temporary.value = permanent.value;
+          tempGroup.style.display = "none";
+        } else {
+          tempGroup.style.display = "block";
+        }
+      }
+
+      checkbox.addEventListener("change", handleToggle);
+      permanent.addEventListener("input", function () {
+        if (checkbox.checked) {
+          temporary.value = permanent.value;
+        }
+      });
+
+      handleToggle();
+    });
+  </script>
+
+  <!-- Image Preview JS -->
+  <script>
+    $(document).ready(function () {
+      $("#id_employee_profile").change(function (e) {
+        const file = this.files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+          const imageUrl = reader.result;
+          $(".preview").attr("src", imageUrl);
+        });
+
+        reader.readAsDataURL(file);
+      });
+
+      $("#file-form").submit(function (e) {
+        e.preventDefault();
+        var formData = new FormData($(this)[0]);
+
+        $.ajax({
+          url: '{% url "update-own-profile-image" %}',
+          type: "POST",
+          data: formData,
+          async: false,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            $("#personalMessage").html(response);
+          }
+        });
+
+        return false;
+      });
+    });
+  </script>
 </div>
