@@ -744,31 +744,45 @@ def task_view(request, project_id, **kwargs):
     }
     return render(request, "task/new/overall.html", context)
 
-
 @login_required
 @hx_request_required
 def quick_create_task(request, stage_id):
-    project_stage = ProjectStage.objects.get(id=stage_id)
+    try:
+        project_stage = ProjectStage.objects.get(id=stage_id)
+    except ProjectStage.DoesNotExist:
+        raise Http404("Project stage not found.")
     hx_target = request.META.get("HTTP_HX_TARGET")
-    if (
-        request.user.employee_get in project_stage.project.managers.all()
-        or request.user.has_perm("project.add_task")
-    ):
-        form = QuickTaskForm(
-            initial={
-                "stage": project_stage,
-                "project": project_stage.project,
-                "end_date": project_stage.project.end_date,
-            }
-        )
+    employee = getattr(request.user, "employee_get", None)
+    if employee and (employee in project_stage.project.managers.all() or request.user.has_perm("project.add_task")):
         if request.method == "POST":
             form = QuickTaskForm(request.POST)
             if form.is_valid():
-                form.save()
+                # Attach missing fields if not coming from the form directly
+                task = form.save(commit=False)
+                task.project = project_stage.project
+                task.stage = project_stage
+                task.end_date = project_stage.project.end_date  # Optional: if needed
+                task.save()
                 messages.success(request, _("The task has been created successfully!"))
                 return HttpResponse(
-                    f"<span hx-get='/project/task-filter/{project_stage.project.id}/?view=card' hx-trigger='load' hx-target='#viewContainer'></span>"
+                    f"<span hx-get='/project/task-filter/{project_stage.project.id}/?view=card' hx-trigger='load' hx-target='#viewContainer'></span>",
+                    content_type="text/html"
                 )
+            else:
+                # Log form errors
+                logger.error("QuickTaskForm errors: %s", form.errors)
+                return HttpResponse(
+                    f"<div style='color:red;'>Form error: {form.errors.as_ul()}</div>",
+                    content_type="text/html"
+                )
+        else:
+            form = QuickTaskForm(
+                initial={
+                    "stage": project_stage,
+                    "project": project_stage.project,
+                    "end_date": project_stage.project.end_date,
+                }
+            )
         return render(
             request,
             "task/new/forms/quick_create_task_form.html",
@@ -779,28 +793,27 @@ def quick_create_task(request, stage_id):
                 "hx_target": hx_target,
             },
         )
-    messages.info(request, "You dont have permission.")
-    return HttpResponse("<script>window.location.reload()</script>")
-
-
+    messages.info(request, "You don't have permission.")
+    return HttpResponse("<script>window.location.reload()</script>", content_type="text/html")
 @login_required
 def create_task(request, stage_id):
     """
-    For creating new task in project view
+    For creating a new task in project view
     """
-    project_stage = ProjectStage.objects.get(id=stage_id)
+    try:
+        project_stage = ProjectStage.objects.get(id=stage_id)
+    except ProjectStage.DoesNotExist:
+        raise Http404("Project stage not found.")
     project = project_stage.project
-    if request.user.employee_get in project.managers.all() or request.user.has_perm(
-        "project.delete_project"
-    ):
-        form = TaskForm(initial={"project": project})
+    employee = getattr(request.user, "employee_get", None)
+    if employee and (employee in project.managers.all() or request.user.has_perm("project.delete_project")):
         if request.method == "POST":
             form = TaskForm(request.POST, request.FILES)
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.stage = project_stage
+                instance.project = project  # Attach project just in case
                 instance.save()
-
                 messages.success(request, _("New task created"))
                 response = render(
                     request,
@@ -809,14 +822,23 @@ def create_task(request, stage_id):
                 )
                 return HttpResponse(
                     response.content.decode("utf-8")
-                    + "<script>location.reload();</script>"
+                    + "<script>location.reload();</script>",
+                    content_type="text/html"
                 )
+            else:
+                logger.error("TaskForm errors: %s", form.errors)
+                return HttpResponse(
+                    f"<div style='color:red;'>Form error: {form.errors.as_ul()}</div>",
+                    content_type="text/html"
+                )
+        else:
+            form = TaskForm(initial={"project": project})
         return render(
             request,
             "task/new/forms/create_task.html",
             context={"form": form, "stage_id": stage_id},
         )
-    messages.info(request, "You dont have permission.")
+    messages.info(request, "You don't have permission.")
     return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
 
 

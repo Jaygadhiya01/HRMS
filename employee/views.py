@@ -861,9 +861,10 @@ def document_reject(request, id):
     form = DocumentRejectForm()
     if document_obj.document:
         if request.method == "POST":
-            form = DocumentRejectForm(request.POST, instance=document_obj)
+            form = DocumentRejectForm(request.POST)
             if form.is_valid():
-                test = form.save()
+                # test = form.save()
+                document_obj.reject_reason = form.cleaned_data["reject_reason"]
                 document_obj.status = "rejected"
                 document_obj.save()
                 messages.error(request, _("Document request rejected"))

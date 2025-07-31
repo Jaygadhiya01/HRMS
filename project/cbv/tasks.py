@@ -8,7 +8,7 @@ from typing import Any
 from django import forms
 from django.contrib import messages
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -243,142 +243,120 @@ class TasksNavBar(HorillaNavView):
         ("status", _("Status")),
     ]
 
-
 @method_decorator(login_required, name="dispatch")
 class TaskCreateForm(HorillaFormView):
-    """
-    Form view for create and update tasks
-    """
-
     form_class = TaskAllForm
     model = Task
     template_name = "cbv/tasks/task_form.html"
     new_display_title = _("Create Task")
-
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        if self.request.user.has_perm("project.view_task"):
-            self.dynamic_create_fields = [
-                ("project", DynamicProjectCreationFormView),
-                ("stage", StageDynamicCreateForm, ["project"]),
-            ]
-
-    def get(self, request, *args, pk=None, **kwargs):
-        project_id = self.kwargs.get("project_id")
-        stage_id = self.kwargs.get("stage_id")
-        task_id = self.kwargs.get("pk")
-        try:
-            if project_id:
-                project = Project.objects.filter(id=project_id).first()
-            elif stage_id:
-                project = ProjectStage.objects.filter(id=stage_id).first().project
-            elif task_id:
-                task = Task.objects.filter(id=task_id).first()
-                project = task.project
-            elif not task_id:
-                return super().get(request, *args, pk=pk, **kwargs)
-            if (
-                request.user.employee_get in project.managers.all()
-                or request.user.is_superuser
-            ):
-                self.dynamic_create_fields = [
-                    ("project", DynamicProjectCreationFormView),
-                    ("stage", StageDynamicCreateForm),
-                ]
-                return super().get(request, *args, pk=pk, **kwargs)
-            elif task_id:
-                if request.user.employee_get in task.task_managers.all():
-                    return super().get(request, *args, pk=pk, **kwargs)
-
-            else:
-                return you_dont_have_permission(request)
-        except Exception as e:
-            logger.error(e)
-            messages.error(request, _("Something went wrong!"))
-            return HttpResponse("<script>window.location.reload()</script>")
-
+    def setup(self, request, *args, **kwargs):
+        self.request = request
+        return super().setup(request, *args, **kwargs)
+    def has_project_access(self, user, project):
+        return (
+            user.is_superuser or
+            user.employee_get in project.managers.all() or
+            user.employee_get in project.members.all()
+        )
+    def has_task_access(self, user, task):
+        return user.is_superuser or user.employee_get in task.task_managers.all()
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        self.object = None
+        form = self.get_form()
+        if request.GET.get("project_task"):
+            project_id = request.GET.get("project_task")
+            stage_id = (
+                ProjectStage.objects.filter(project_id=project_id)
+                .order_by("sequence")
+                .values_list("id", flat=True)
+                .first()
+            )
+            form.fields["project"].initial = project_id
+            form.fields["stage"].initial = stage_id
+            stages = ProjectStage.objects.filter(project_id=project_id)
+            form.fields["stage"].choices = [(s.pk, s.title) for s in stages]
+        elif kwargs.get("stage_id"):
+            stage_id = kwargs["stage_id"]
+            stage = get_object_or_404(ProjectStage, pk=stage_id)
+            project = stage.project
+            form.fields["project"].initial = project.id
+            form.fields["stage"].initial = stage.id
+            stages = ProjectStage.objects.filter(project=project)
+            form.fields["stage"].choices = [(s.pk, s.title) for s in stages]
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        form = context.get("form", self.get_form())
         project_id = self.kwargs.get("project_id")
         stage_id = self.kwargs.get("stage_id")
         task_id = self.kwargs.get("pk")
-
         dynamic_project_id = self.request.GET.get("dynamic_project")
-
         if dynamic_project_id and dynamic_project_id != "dynamic_create":
             stages = ProjectStage.objects.filter(project=dynamic_project_id)
-            attrs = self.form.fields["stage"].widget.attrs
-            attrs["style"] = "width:100% !important;"
-            self.form.fields["stage"].choices = (
-                [("", _("Select Stage"))]
-                + [(stage.pk, stage) for stage in stages]
-                + [("dynamic_create", _("Dynamic Create"))]
-            )
-
+            form.fields["stage"].choices = [("", _("Select Stage"))] + [(s.pk, s.title) for s in stages]
         if task_id and not dynamic_project_id:
-            task = self.form.instance
-            stages = task.project.project_stages.all()
-            self.form.fields["stage"].choices = (
-                [("", _("Select Stage"))]
-                + [(stage.pk, stage) for stage in stages]
-                + [("dynamic_create", _("Dynamic Create"))]
-            )
-
+            task = form.instance
+            if task.project:
+                stages = task.project.project_stages.all()
+                form.fields["stage"].choices = [("", _("Select Stage"))] + [(s.pk, s.title) for s in stages]
         if stage_id:
             stage = ProjectStage.objects.filter(id=stage_id).first()
-            project = stage.project
-            self.form.fields["stage"].initial = stage
-            self.form.fields["stage"].choices = [(stage.id, stage.title)]
-            self.form.fields["project"].initial = project
-            self.form.fields["project"].choices = [(project.id, project.title)]
+            if stage:
+                project = stage.project
+                form.fields["stage"].initial = stage
+                form.fields["stage"].choices = [(stage.id, stage.title)]
+                form.fields["project"].initial = project
+                form.fields["project"].choices = [(project.id, project.title)]
         elif project_id:
-            project = Project.objects.get(id=project_id)
-            self.form.fields["project"].initial = project
-            self.form.fields["project"].choices = [(project.id, project.title)]
-            stages = ProjectStage.objects.filter(project=project)
-            self.form.fields["stage"].choices = [
-                (stage.id, stage.title) for stage in stages
-            ]
-        elif self.form.instance.pk:
+            project = Project.objects.filter(id=project_id).first()
+            if project:
+                form.fields["project"].initial = project
+                form.fields["project"].choices = [(project.id, project.title)]
+                stages = ProjectStage.objects.filter(project=project)
+                form.fields["stage"].choices = [(s.id, s.title) for s in stages]
+        elif form.instance.pk:
             self.form_class.verbose_name = _("Update Task")
             if self.request.GET.get("project_task"):
-                self.form.fields["project"].widget = forms.HiddenInput()
-                self.form.fields["stage"].widget = forms.HiddenInput()
-        else:
-            if self.request.user.is_superuser:
-                self.dynamic_create_fields = [
-                    ("project", DynamicProjectCreationFormView),
-                    ("stage", StageDynamicCreateForm, ["project"]),
-                ]
-
-        if project_id or stage_id:
-            if (
-                self.request.user.employee_get in project.managers.all()
-                or self.request.user.is_superuser
-            ):
-
-                self.form.fields["project"].choices.append(
-                    ("dynamic_create", "Dynamic create")
-                )
-                self.form.fields["stage"].choices.append(
-                    ("dynamic_create", "Dynamic create")
-                )
-
+                form.fields["project"].widget = forms.HiddenInput()
+                form.fields["stage"].widget = forms.HiddenInput()
+        if not form.fields["project"].choices:
+            form.fields["project"].choices = [(p.pk, p.title) for p in Project.objects.all()]
+        if not form.fields["stage"].choices:
+            form.fields["stage"].choices = [("", _("Select Stage"))]
+        context["form"] = form
         return context
-
-    def form_valid(self, form: TaskAllForm) -> HttpResponse:
-        stage_id = self.kwargs.get("stage_id")
-        if form.is_valid():
-            if form.instance.pk:
-                message = _(f"{self.form.instance} Updated")
-            else:
-                message = _("New Task created")
-            form.save()
-            messages.success(self.request, _(message))
-            if stage_id or self.request.GET.get("project_task"):
+    def form_valid(self, form):
+        try:
+            is_update = bool(form.instance.pk)
+            instance = form.save(commit=False)
+        # Forcefully inject project & stage if missing
+            project = self.request.POST.get("project") or self.kwargs.get("project_id")
+            stage = self.request.POST.get("stage") or self.kwargs.get("stage_id")
+            if not project:
+                raise ValueError("Missing 'project' field.")
+            if not stage:
+                raise ValueError("Missing 'stage' field.")
+            instance.project_id = project
+            instance.stage_id = stage
+            instance.save()
+            form.save_m2m()
+            msg = _(f"{instance} Updated") if is_update else _("New Task created")
+            messages.success(self.request, msg)
+            if self.kwargs.get("stage_id") or self.request.GET.get("project_task"):
                 return HttpResponse("<script>location.reload();</script>")
-            return self.HttpResponse("<script>$('#taskFilterButton').click();</script>")
-        return super().form_valid(form)
+            return HttpResponse("<script>$('#taskFilterButton').click();</script>")
+        except Exception as e:
+            logger.error("form_valid() failed: %s", str(e))
+            logger.error("Traceback:\n%s", traceback.format_exc())
+            logger.error("POST data:\n%s", self.request.POST)
+            logger.error("Cleaned data:\n%s", getattr(form, 'cleaned_data', {}))
+            messages.error(self.request, _("Something went wrong!"))
+            return HttpResponse("<script>window.location.reload()</script>")
+    def form_invalid(self, form):
+        logger.error("Form errors in TaskCreateForm:\n%s", form.errors)
+        messages.error(self.request, _("Form submission failed. Please check the fields."))
+        return super().form_invalid(form)
 
 
 class DynamicTaskCreateFormView(TaskCreateForm):

@@ -114,28 +114,46 @@ WSGI_APPLICATION = "horilla.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if env("DATABASE_URL", default=None):
-    DATABASES = {
-        "default": env.db(),
+# if env("DATABASE_URL", default=None):
+#     DATABASES = {
+#         "default": env.db(),
+#     }
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": env("DB_ENGINE", default="django.db.backends.sqlite3"),
+#             "NAME": env(
+#                 "DB_NAME",
+#                 default=os.path.join(
+#                     BASE_DIR,
+#                     "TestDB_Horilla.sqlite3",
+#                 ),
+#             ),
+#             "USER": env("DB_USER", default=""),
+#             "PASSWORD": env("DB_PASSWORD", default=""),
+#             "HOST": env("localhost", default=""),
+#             "PORT": env("5432   ", default=""),
+#         }
+#     }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'TestDB_Horilla.sqlite3',
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": env("DB_ENGINE", default="django.db.backends.sqlite3"),
-            "NAME": env(
-                "DB_NAME",
-                default=os.path.join(
-                    BASE_DIR,
-                    "TestDB_Horilla.sqlite3",
-                ),
-            ),
-            "USER": env("DB_USER", default=""),
-            "PASSWORD": env("DB_PASSWORD", default=""),
-            "HOST": env("localhost", default=""),
-            "PORT": env("5432   ", default=""),
-        }
-    }
-    
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'mydb',
+#         'USER': 'myusernew',
+#         'PASSWORD': 'mypassword',
+#         'HOST': 'localhost',  # or use IP if remote
+#         'PORT': '5432',
+#     }
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

@@ -1,4 +1,5 @@
 {% load static i18n horillafilters %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -216,7 +217,7 @@
 </table>
 
 
-        <div class="section">
+       <div class="section">
             <div class="section-title">{% trans "Attendance Summary" %}</div>
             <table>
                 <tr>
@@ -226,12 +227,16 @@
                     </td>
                     <td>
                         <span class="info-label">{% trans "Attendance Days:" %}</span>
-                        <span class="info-label"> {{ attendance|default:"0" }}</span>
+                        <span class="info-label"> {{ attendance_days}}</span>
                     </td>
                     <td class="w-50">
-                        <span class="oh-payslip-td-head">{% trans "Loss of Pay (Days):" %}</span>
-                        <span class="oh-payslip-td-value">{{ payslip.loss_of_pay_days }}</span>
+                        <span class="oh-payslip-td-head">{% trans "Abesent Days :" %}</span>
+                        <span class="oh-payslip-td-value">{{ absent_days }}</span>
                     </td>
+                     <!-- <td>
+                        <span class="info-label">{% trans "Weekend Days Worked:" %}</span>
+                        <span class="info-value">{{ weekend_days_worked }}</span>
+                    </td> -->
                     <!-- <td>
                         <span class="info-label">{% trans "Increment Days:" %}</span>
                         <span class="info-value">{{ increment_days }}</span>
@@ -349,9 +354,9 @@
                             {% trans "Gross earning - Total Deduction" %}
                         </p>
                     </td>
-                    <td class="oh-payslip-total-amount {% if net_pay < 0 %}text-danger{% endif %}">
-                        {{ net_pay|floatformat:2|currency_symbol_position }}
-                    </td>   
+                  <td class="oh-payslip-total-amount {% if net_pay < 0 %}text-danger{% endif %}" style="text-align:center;">
+                        {{ net_pay|round2|currency_symbol_position }}
+                    </td>
                 </tr>
             </tbody>
         </table>
